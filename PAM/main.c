@@ -21,9 +21,11 @@ int handle_sudo(char *cmd, char *user){
     char username[1024];
     char *user_cmd;
 
-    user_cmd = strtok(NULL," ");
+    strcpy(user_cmd, cmd + 5);
 
-    printf("\n%s",user_cmd);
+    strcat(user,user_cmd);
+
+    printf("\n user_cmd: %s",user_cmd);
 
     write = fopen("/tmp/py-c", "w");
 
