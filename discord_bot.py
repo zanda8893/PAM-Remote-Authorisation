@@ -1,10 +1,13 @@
 #!./venv/bin/python3
 import sys
 from os import getenv
+import asyncio
+
+import main
 
 import discord
 from discord import Intents
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.utils import get
 from dotenv import load_dotenv
 
@@ -21,25 +24,23 @@ intents.message_content = True
 bot = discord.Bot(command_prefix="!", intents=intents)
 
 
-def has_not_role(ctx) -> bool:
-
-    if get(bot.guild.roles, name="Members") not in ctx.author.roles:
-        return True
-    raise commands.CheckFailure(f"{ctx.author} is already verified!")
-
-
 @bot.event
 async def on_ready():  # When bot is ready
     print(f'Logged on as {bot.user}!')
 
     bot.guild = bot.guilds[0]  # Get the first server the bot has joined (TODO: Make this configurable)
 
-    channel = discord.utils.get(bot.guild.channels, name="approval")
+    bot.channel = get(bot.guild.channels, name="approval")
+    await bot.channel.send("Bot online")
+    bot.loop.create_task(check_events())
 
 
-@bot.event
-async def on_member_join(member: discord.member.Member):  # When a member joins the server
-    pass
+async def check_events():
+    while True:
+        event_data = await main.retrieve_event()
+        if event_data:
+            await approve()
+        await asyncio.sleep(5)
 
 
 @bot.command(description="status")
@@ -48,6 +49,12 @@ async def status(ctx):  # (TODO: add more to status)
     This function is called when a user types !verify-me
     """
     await ctx.respond(f"Working")
+
+
+async def approve():
+    await bot.channel.send("Called from main")
+
+bot.run(getenv('DISCORD_TOKEN'))
 
 if __name__ == "__main__":
     bot.run(getenv('DISCORD_TOKEN'))
