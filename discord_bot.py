@@ -30,17 +30,14 @@ async def on_ready():  # When bot is ready
     print(f'Logged on as {bot.user}!')
 
     bot.guild = bot.guilds[0]  # Get the first server the bot has joined (TODO: Make this configurable)
+    channel = getenv('CHANNEL')
+    bot.approvers = bot.members_role = get(bot.guild.roles, name=getenv('APPROVERS_ROLE'))
+    bot.channel = get(bot.guild.channels, name=channel)
 
-    bot.channel = get(bot.guild.channels, name="approval")
+
     await bot.channel.send("Bot online")
-    #bot.loop.create_task(test_task())
     bot.loop.create_task(check_events())
     bot.approvals = []
-
-async def test_task():
-    while True:  # Replace this with your task's condition
-        print("Bluh")
-        await asyncio.sleep(60)  # For example, wait for 60 seconds
 
 async def check_events():
     while True:
@@ -68,11 +65,12 @@ async def on_reaction_add(reaction, user):
     message = reaction.message  # our embed
     if message.channel.id == bot.channel.id:  # checking if it's the same channel
         if message.author == bot.user:  # checking if it's sent by the bot
-            if str(reaction.emoji) == "👍":  # checking the emoji
-                for approve in bot.approvals:
-                    if approve['message'].id == message.id:
-                        approve['approve'] = 1
-                        print(bot.approvals)
+            if bot.approvers in user.roles:  # checking if it's sent by the approver
+                if str(reaction.emoji) == "👍":  # checking the emoji
+                    for approve in bot.approvals:
+                        if approve['message'].id == message.id:
+                            approve['approve'] = 1
+                            await main.sent_event(approve)
 
 bot.run(getenv('DISCORD_TOKEN'))
 

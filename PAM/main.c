@@ -6,50 +6,43 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <signal.h>
 
-int stop = 0;
-
-void sigint_handler(int signum) {
-    int stop = signum;
-}
 
 int handle_sudo(char *cmd, char *user){
     FILE *write;
     FILE *read;
 
-    char username[1024];
+    char response[1024];
     char *user_cmd;
 
-    strcpy(user_cmd, cmd + 5);
-
-    strcat(user,user_cmd);
-
-    printf("\n user_cmd: %s",user_cmd);
+    strcpy(user_cmd,user);
+    strcat(user_cmd," ");
+    strcat(user_cmd, cmd + 5);
 
     write = fopen("/tmp/py-c", "w");
 
-    fprintf(write, user);
+    fprintf(write, user_cmd);
 
     fclose(write);
-
     read = fopen("/tmp/py-c", "r");
 
 
-    fgets(username,1023,read);
+    fgets(response,1023,read);
 
 
     fclose(read);
 
-    if (strcmp(username, user)) {
+    strcat(user_cmd," ");
+    strcat(user_cmd,"1");
+
+
+    if (strcmp(response, user)) {
         return 0;
     }
     return 1;
 }
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv) {
-    signal(SIGINT, sigint_handler);
-
     const char *user;
     char proc[1024];
     char *cmd; // Max file name length plus \0
@@ -62,7 +55,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
     pid_t pid = getpid();
 
-    printf("%d\n",pid);
     snprintf(proc,sizeof(proc), "/proc/%d/cmdline", pid);
 
 
@@ -71,11 +63,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     fclose(fcmdline);
 
 
-    printf("%s\n",cmdline);
     cmd = strtok(cmdline," ");
 
-    printf("%s\n",cmd);
-    //mkfifo("/tmp/py-c", 0666);
+    mkfifo("/tmp/py-c", 0666);
 
     if (strcmp(cmd, "sudo") == 0) {
         return_val = handle_sudo(cmd, user);
@@ -84,7 +74,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     if (return_val == 0) {
         return PAM_SUCCESS;
     }
-
 
 
     return PAM_AUTH_ERR;
