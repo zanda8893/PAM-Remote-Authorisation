@@ -5,15 +5,9 @@ The PAM Remote Authorization project facilitates secure execution of sudo comman
 ## Features
 
 - **Discord Bot Integration:** Utilizes a Discord bot for seamless authorization.
-- **Sudo Command Execution:** Allows authorized users to execute sudo commands.
-- **User Approval Mechanism:** Users gain authorization by reacting to a designated message.
-- **Secure Authorization:** Ensures execution privileges only to approved users.
+- **Sudo Command Execution:** Allows authorized users can approve the execution of sudo commands.
+- **User Approval Mechanism:** Users can have sudo commands approved remotely.
 
-## How It Works
-
-1. **Discord Bot Setup:** Integrate the bot into your Discord server.
-2. **Authorization Process:** Users react to the authorization message with a 👍.
-3. **Execution:** Approved users can execute sudo commands.
 
 ## Getting Started
 
@@ -85,6 +79,27 @@ This is to ensure sudo checks the PAM everytime a user runs a sudo command
 # systemctl daemon-reload
 # systemctl enable --now pam-remote-auth
 ```
+
+## TODO
+### Discord Bot
+- [ ] Config
+  - [ ] Channel configurable
+  - [ ] Approval Role configurable
+- [ ] Logging
+- [ ] Better message formatting
+### PAM module
+- [ ] Work for other programs not just sudo
+- [ ] Safer string handling
+- [ ] Logging
+- [ ] ctrl-c to work
+### More bot intergration
+- [ ] Slack
+- [ ] Teams?
+### Other
+- [ ] Web UI
+- [ ] Docker
+- [ ] Packaging for distros
+- [ ] testing
 
 ## Contribution
 
