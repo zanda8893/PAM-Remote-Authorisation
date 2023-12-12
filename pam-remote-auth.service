@@ -1,0 +1,13 @@
+[Unit]
+Description=PAM Remote Authorisation
+Documentation=https://github.com/zanda8893/PAM-Remote-Authorisation/wiki/
+
+[Service]
+ExecStart=/usr/sbin/PAM_bot
+Restart=on-failure
+RestartSec=20
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
+
