@@ -30,9 +30,9 @@ async def on_ready():  # When bot is ready
     print(f'Logged on as {bot.user}!')
 
     bot.guild = bot.guilds[0]  # Get the first server the bot has joined (TODO: Make this configurable)
-    channel = getenv('CHANNEL')
+
     bot.approvers = bot.members_role = get(bot.guild.roles, name=getenv('APPROVERS_ROLE'))
-    bot.channel = get(bot.guild.channels, name=channel)
+    bot.channel = get(bot.guild.channels, name=getenv('CHANNEL'))
 
 
     await bot.channel.send("Bot online")

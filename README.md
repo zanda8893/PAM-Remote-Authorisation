@@ -82,9 +82,9 @@ This is to ensure sudo checks the PAM everytime a user runs a sudo command
 
 ## TODO
 ### Discord Bot
-- [ ] Config
-  - [ ] Channel configurable
-  - [ ] Approval Role configurable
+- [X] Config
+  - [X] Channel configurable
+  - [X] Approval Role configurable
 - [ ] Logging
 - [ ] Better message formatting
 ### PAM module
