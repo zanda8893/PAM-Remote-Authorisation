@@ -20,8 +20,17 @@ async def retrieve_event():
         data = await pipe.read()
         data = data.split(" ")
         data_dict["user"] = data[0]
-        data_dict["cmd"] = data[1]
-        return data_dict
+        if len(data) > 1:
+            data_dict["cmd"] = data[1]
+            return data_dict
+        else:
+            print(data_dict)
+
+
+async def sent_event(data):
+    # Simulating retrieving an event
+    async with aiofiles.open('/tmp/py-c', mode='wb') as pipe:
+        await pipe.write(f"{data['user']} {data['cmd']} {data['approve']}")
 
 
 if __name__ == "__main__":
