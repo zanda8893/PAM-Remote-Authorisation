@@ -45,15 +45,15 @@ $ make
 
 ### Bot setup
 
-Currently, the bot sends messages to a channel called "approval". Users to authorise commands must have the role "approvers".
-<br/>You must create this channel and role.
-
 Place your discord token in the config
+Also set a channel and role. You must create this channel and role.
 
 `/etc/remote_auth.conf:`
 ```
 # Discord
 DISCORD_TOKEN=[Token Here]
+CHANNEL=approval
+APPROVERS_ROLE=approvers
 ```
 Enable the PAM (sudo)
 
