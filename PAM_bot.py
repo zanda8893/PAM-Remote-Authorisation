@@ -11,7 +11,7 @@ from discord.ext import commands, tasks
 from discord.utils import get
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv('/etc/remote_auth.conf')
 
 if getenv('DEBUG'):
     print("PRODUCTION MODE")
